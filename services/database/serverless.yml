@@ -1,0 +1,186 @@
+service: database
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-central-1
+  stage: prod
+  memorySize: 128
+  timeout: 5
+  endpointType: regional
+
+
+resources:
+  Resources:
+    SubscriptionTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: subscription
+        AttributeDefinitions:
+          - AttributeName: user_id
+            AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: N
+          - AttributeName: subject
+            AttributeType: S
+          - AttributeName: count
+            AttributeType: N
+          - AttributeName: subscription_id
+            AttributeType: N
+        KeySchema:
+          - AttributeName: user_id
+            KeyType: HASH
+          - AttributeName: timestamp
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        LocalSecondaryIndexes:
+          - IndexName: subscription-user_id-subject-index
+            KeySchema:
+              - AttributeName: user_id
+                KeyType: HASH
+              - AttributeName: subject
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: subscription-user_id-count-index
+            KeySchema:
+              - AttributeName: user_id
+                KeyType: HASH
+              - AttributeName: count
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+        GlobalSecondaryIndexes:
+          - IndexName: subscription-subscription_id
+            KeySchema:
+              - AttributeName: subscription_id
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+    StudentTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: student
+        AttributeDefinitions:
+          - AttributeName: student_id
+            AttributeType: S
+          # - AttributeName: username - you don't need to put anything that will not be used in AttriubuteName in any section
+          #   AttributeType: S
+          # - AttributeName: password
+          #   AttributeType: S
+          - AttributeName: score
+            AttributeType: N
+        KeySchema:
+          - AttributeName: student_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1 
+        GlobalSecondaryIndexes:
+          - IndexName: student-score-index
+            KeySchema:
+              - AttributeName: score
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+    ProfessorTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: professor
+        AttributeDefinitions:
+          - AttributeName: professor_id
+            AttributeType: S
+          # - AttributeName: username - you don't need to put anything that will not be used in AttriubuteName in any section
+          #   AttributeType: S
+          # - AttributeName: password
+          #   AttributeType: S
+          - AttributeName: subject
+            AttributeType: S
+        KeySchema:
+          - AttributeName: professor_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1 
+        GlobalSecondaryIndexes:
+          - IndexName: professor-subject-index
+            KeySchema:
+              - AttributeName: subject
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+    QuestionTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: question
+        AttributeDefinitions:
+          - AttributeName: question_id
+            AttributeType: S
+          # - AttributeName: text - you don't need to put anything that will not be used in AttriubuteName in any section
+          #   AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: S
+          - AttributeName: category
+            AttributeType: S
+          - AttributeName: points
+            AttributeType: N
+          - AttributeName: professor_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: question_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1 
+        GlobalSecondaryIndexes:
+          - IndexName: question-timestamp-index
+            KeySchema:
+              - AttributeName: timestamp
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: question-category-index
+            KeySchema:
+              - AttributeName: category
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: question-points-index
+            KeySchema:
+              - AttributeName: points
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: question-professor_id-index
+            KeySchema:
+              - AttributeName: professor_id
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1

@@ -13,9 +13,10 @@ phases:
     commands:
       - echo Deployment started on `date`
       - echo Deploying with the Serverless Framework
-      - echo pwd
+      - echo $pwd
       - cd services/database/
-      - sls deploy -v -s $ENV_NAME
+      - echo $pwd
+      # - sls deploy -v -s $ENV_NAME
   post_build:
     commands:
       - echo Deployment completed on `date`

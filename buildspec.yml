@@ -17,6 +17,9 @@ phases:
       - cd services/database/
       - echo $pwd
       # - sls deploy -v -s $ENV_NAME
+      - cd ../crud-api
+      - pwd
+      #- sls deploy -v -s $ENV_NAME
   post_build:
     commands:
       - echo Deployment completed on `date`

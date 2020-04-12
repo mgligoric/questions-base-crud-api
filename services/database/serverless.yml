@@ -27,7 +27,7 @@ resources:
           - AttributeName: count
             AttributeType: N
           - AttributeName: subscription_id
-            AttributeType: N
+            AttributeType: S
         KeySchema:
           - AttributeName: user_id
             KeyType: HASH

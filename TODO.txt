@@ -1,0 +1,18 @@
+TODO - TO THINK - ISSUES
+
+- When somebody create a subscription u must update table:
+Subsciption - Count of students
+- Strictly define JSON files - Kotlin must now what to read etc
+- Best practice for writing routes : 
+Edit ruoute for example
+- Keep in mind that DynamoDB fetches data in pages, 
+therefore you have to issue the same request more than once 
+in the case of multiple pages. You have to use the last evaluated
+ key to your next request. If there are a lot of entries, 
+ be aware that you should handle the call stack size.
+THIS !!!!!!!!!!!
+- As mentioned, the attribute included in "KeyConditionExpression" should be your hash key only, matching your base table schema (in this case 'feed_guid'). If you want to query on both 'feed_guid' and 'status
+you need to create the table with hash and range key and specify 'status_id' as your range key.
+https://stackoverflow.com/questions/31830888/dynamodb-query-error-query-key-condition-not-supported
+https://stackoverflow.com/questions/56051891/how-to-query-aws-dynamodb-using-keyconditionexpression
+- KeyConditionExpression should contain only columns in the hash key. But any un-indexed columns can be included in the FilterExpression

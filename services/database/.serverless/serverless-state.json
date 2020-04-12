@@ -73,97 +73,87 @@
               }
             }
           },
-          "QuestionTable": {
+          "SubscriptionTable": {
             "Type": "AWS::DynamoDB::Table",
             "DeletionPolicy": "Retain",
             "Properties": {
-              "TableName": "question",
+              "TableName": "subscription",
               "AttributeDefinitions": [
                 {
-                  "AttributeName": "question_id",
+                  "AttributeName": "user_id",
                   "AttributeType": "S"
                 },
                 {
                   "AttributeName": "timestamp",
-                  "AttributeType": "S"
-                },
-                {
-                  "AttributeName": "category",
-                  "AttributeType": "S"
-                },
-                {
-                  "AttributeName": "points",
                   "AttributeType": "N"
                 },
                 {
-                  "AttributeName": "professor_id",
+                  "AttributeName": "subject",
+                  "AttributeType": "S"
+                },
+                {
+                  "AttributeName": "count",
+                  "AttributeType": "N"
+                },
+                {
+                  "AttributeName": "subscription_id",
                   "AttributeType": "S"
                 }
               ],
               "KeySchema": [
                 {
-                  "AttributeName": "question_id",
+                  "AttributeName": "user_id",
                   "KeyType": "HASH"
+                },
+                {
+                  "AttributeName": "timestamp",
+                  "KeyType": "RANGE"
                 }
               ],
               "ProvisionedThroughput": {
                 "ReadCapacityUnits": 1,
                 "WriteCapacityUnits": 1
               },
+              "LocalSecondaryIndexes": [
+                {
+                  "IndexName": "subscription-user_id-subject-index",
+                  "KeySchema": [
+                    {
+                      "AttributeName": "user_id",
+                      "KeyType": "HASH"
+                    },
+                    {
+                      "AttributeName": "subject",
+                      "KeyType": "RANGE"
+                    }
+                  ],
+                  "Projection": {
+                    "ProjectionType": "ALL"
+                  }
+                },
+                {
+                  "IndexName": "subscription-user_id-count-index",
+                  "KeySchema": [
+                    {
+                      "AttributeName": "user_id",
+                      "KeyType": "HASH"
+                    },
+                    {
+                      "AttributeName": "count",
+                      "KeyType": "RANGE"
+                    }
+                  ],
+                  "Projection": {
+                    "ProjectionType": "ALL"
+                  }
+                }
+              ],
               "GlobalSecondaryIndexes": [
                 {
-                  "IndexName": "question-timestamp-index",
+                  "IndexName": "subscription-subscription_id",
                   "KeySchema": [
                     {
-                      "AttributeName": "timestamp",
-                      "KeyType": "HASH"
-                    }
-                  ],
-                  "Projection": {
-                    "ProjectionType": "ALL"
-                  },
-                  "ProvisionedThroughput": {
-                    "ReadCapacityUnits": 1,
-                    "WriteCapacityUnits": 1
-                  }
-                },
-                {
-                  "IndexName": "question-category-index",
-                  "KeySchema": [
-                    {
-                      "AttributeName": "category",
-                      "KeyType": "HASH"
-                    }
-                  ],
-                  "Projection": {
-                    "ProjectionType": "ALL"
-                  },
-                  "ProvisionedThroughput": {
-                    "ReadCapacityUnits": 1,
-                    "WriteCapacityUnits": 1
-                  }
-                },
-                {
-                  "IndexName": "question-points-index",
-                  "KeySchema": [
-                    {
-                      "AttributeName": "points",
-                      "KeyType": "HASH"
-                    }
-                  ],
-                  "Projection": {
-                    "ProjectionType": "ALL"
-                  },
-                  "ProvisionedThroughput": {
-                    "ReadCapacityUnits": 1,
-                    "WriteCapacityUnits": 1
-                  }
-                },
-                {
-                  "IndexName": "question-professor_id-index",
-                  "KeySchema": [
-                    {
-                      "AttributeName": "professor_id",
+                      "AttributeName": "subscription_id",
                       "KeyType": "HASH"
                     }
                   ],
@@ -259,97 +249,87 @@
     "functions": {},
     "resources": {
       "Resources": {
-        "QuestionTable": {
+        "SubscriptionTable": {
           "Type": "AWS::DynamoDB::Table",
           "DeletionPolicy": "Retain",
           "Properties": {
-            "TableName": "question",
+            "TableName": "subscription",
             "AttributeDefinitions": [
               {
-                "AttributeName": "question_id",
+                "AttributeName": "user_id",
                 "AttributeType": "S"
               },
               {
                 "AttributeName": "timestamp",
-                "AttributeType": "S"
-              },
-              {
-                "AttributeName": "category",
-                "AttributeType": "S"
-              },
-              {
-                "AttributeName": "points",
                 "AttributeType": "N"
               },
               {
-                "AttributeName": "professor_id",
+                "AttributeName": "subject",
+                "AttributeType": "S"
+              },
+              {
+                "AttributeName": "count",
+                "AttributeType": "N"
+              },
+              {
+                "AttributeName": "subscription_id",
                 "AttributeType": "S"
               }
             ],
             "KeySchema": [
               {
-                "AttributeName": "question_id",
+                "AttributeName": "user_id",
                 "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "timestamp",
+                "KeyType": "RANGE"
               }
             ],
             "ProvisionedThroughput": {
               "ReadCapacityUnits": 1,
               "WriteCapacityUnits": 1
             },
+            "LocalSecondaryIndexes": [
+              {
+                "IndexName": "subscription-user_id-subject-index",
+                "KeySchema": [
+                  {
+                    "AttributeName": "user_id",
+                    "KeyType": "HASH"
+                  },
+                  {
+                    "AttributeName": "subject",
+                    "KeyType": "RANGE"
+                  }
+                ],
+                "Projection": {
+                  "ProjectionType": "ALL"
+                }
+              },
+              {
+                "IndexName": "subscription-user_id-count-index",
+                "KeySchema": [
+                  {
+                    "AttributeName": "user_id",
+                    "KeyType": "HASH"
+                  },
+                  {
+                    "AttributeName": "count",
+                    "KeyType": "RANGE"
+                  }
+                ],
+                "Projection": {
+                  "ProjectionType": "ALL"
+                }
+              }
+            ],
             "GlobalSecondaryIndexes": [
               {
-                "IndexName": "question-timestamp-index",
+                "IndexName": "subscription-subscription_id",
                 "KeySchema": [
                   {
-                    "AttributeName": "timestamp",
-                    "KeyType": "HASH"
-                  }
-                ],
-                "Projection": {
-                  "ProjectionType": "ALL"
-                },
-                "ProvisionedThroughput": {
-                  "ReadCapacityUnits": 1,
-                  "WriteCapacityUnits": 1
-                }
-              },
-              {
-                "IndexName": "question-category-index",
-                "KeySchema": [
-                  {
-                    "AttributeName": "category",
-                    "KeyType": "HASH"
-                  }
-                ],
-                "Projection": {
-                  "ProjectionType": "ALL"
-                },
-                "ProvisionedThroughput": {
-                  "ReadCapacityUnits": 1,
-                  "WriteCapacityUnits": 1
-                }
-              },
-              {
-                "IndexName": "question-points-index",
-                "KeySchema": [
-                  {
-                    "AttributeName": "points",
-                    "KeyType": "HASH"
-                  }
-                ],
-                "Projection": {
-                  "ProjectionType": "ALL"
-                },
-                "ProvisionedThroughput": {
-                  "ReadCapacityUnits": 1,
-                  "WriteCapacityUnits": 1
-                }
-              },
-              {
-                "IndexName": "question-professor_id-index",
-                "KeySchema": [
-                  {
-                    "AttributeName": "professor_id",
+                    "AttributeName": "subscription_id",
                     "KeyType": "HASH"
                   }
                 ],
@@ -372,7 +352,7 @@
     "isDashboardMonitoringPreconfigured": false
   },
   "package": {
-    "artifactDirectoryName": "serverless/database/prod/1586373173771-2020-04-08T19:12:53.771Z",
+    "artifactDirectoryName": "serverless/database/prod/1586609049574-2020-04-11T12:44:09.574Z",
     "artifact": ""
   }
 }

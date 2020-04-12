@@ -1,5 +1,23 @@
 service: crud-api
 
+plugins:
+  - serverless-offline
+
+custom:
+  allowedHeaders:
+    - Accept
+    - Content-Type
+    - Content-Length
+    - Authorization
+    - X-Amz-Date
+    - X-Api-Key
+    - X-Amz-Security-Token
+    - X-Amz-User-Agent
+    - app_user_id
+    - app_subject
+    - app_category
+    - app_points
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -8,3 +26,80 @@ provider:
   memorySize: 128
   timeout: 5
   endpointType: regional
+  environment:
+    QUESTION_TABLE: question
+    SUBSCRIPTION_TABLE: subscritpion
+  iamRoleStatements:
+    - Effect: Allow
+      Action: 
+        - dynamodb:Query
+        - dynamodb:PutItem
+        - dynamodb:DeleteItem
+      Resource: 
+      - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/$QUESTION_TABLE"
+      - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/$SUBSCRIPTION_TABLE"
+
+functions:
+  add-question:
+    handler: question-add.handler
+    description: POST /question
+    events:
+      - http:
+          path: question
+          method: post
+          cors:
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+  update-question:
+    handler: question-edit.handler
+    description: PATCH /question
+    events:
+      - http:
+          path: question
+          method: patch
+          cors:
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+  add-subscription:
+    handler: subscription-add.handler
+    description: POST /subscription
+    events:
+      - http:
+          path: subscription
+          method: post
+          cors:
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+  get-question:
+    handler: question-get.handler
+    description: GET /question
+    events:
+      - http:
+          path: question
+          method: get
+          cors:
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+
+  # get-notes:
+  #   handler: crud-api/get-notes.handler
+  #   description: GET /notes
+  #   events:
+  #     - http:
+  #         path: notes
+  #         method: get
+  #         cors:
+  #           origin: '*'
+  #           headers: ${self:custom.allowedHeaders}
+
+
+  # delete-note:
+  #   handler: crud-api/delete-note.handler
+  #   description: DELETE /note
+  #   events:
+  #     - http:
+  #         path: subscription/t/{timestamp}
+  #         method: delete
+  #         cors:
+  #           origin: '*'
+  #           headers: ${self:custom.allowedHeaders}

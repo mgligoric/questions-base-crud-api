@@ -13,16 +13,22 @@ const tableName = "subscription"
 
 exports.handler = async (event) => {
     try {
-        let subscription_id = decodeURIComponent(event.pathParameters.subscription_id);
+        user_id = util.getUserId(event.headers)
+        if(!user_id){
+            let err = {}
+            err.name = "ValidationException"
+            err.message = "Authorization failure"
+            throw err
+        }
+        let subject = event.queryStringParameters.subject;
 
         let params = {
             TableName: tableName,
-            IndexName: "subscription-subscription_id",
-            KeyConditionExpression: "subscription_id = :uid",
+            IndexName: "subject-index",
+            KeyConditionExpression: "subject = :subject",
             ExpressionAttributeValues: {
-                ":uid": subscription_id
-            },
-            Limit: 1,
+                ":subject": subject
+            }
         };
 
         let data = await dynamodb.query(params).promise();
@@ -30,7 +36,7 @@ exports.handler = async (event) => {
             return {
                 statusCode: 200,
                 headers: util.getResponseHeaders(),
-                body: JSON.stringify(data.Items[0])
+                body: JSON.stringify(data.Items)
             };
         } else {
             return {

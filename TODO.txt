@@ -16,3 +16,8 @@ you need to create the table with hash and range key and specify 'status_id' as 
 https://stackoverflow.com/questions/31830888/dynamodb-query-error-query-key-condition-not-supported
 https://stackoverflow.com/questions/56051891/how-to-query-aws-dynamodb-using-keyconditionexpression
 - KeyConditionExpression should contain only columns in the hash key. But any un-indexed columns can be included in the FilterExpression
+- GITIGNORE PLS
+- Obezbedi da ne moze ni jednoj ruti da ti pritstupa neko bez key-a!!!
+- Vodi racuna da li kod dynamoDB koristis funkciju delete / update ili sta vec jer
+se on da razlikuju Expressions koje mozes da koristis u params
+- Istrazi kako da obrises vise stvari iz tabele 

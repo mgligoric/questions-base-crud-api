@@ -60,16 +60,6 @@ functions:
           cors:
             origin: '*'
             headers: ${self:custom.allowedHeaders}
-  add-subscription:
-    handler: subscription-add.handler
-    description: POST /subscription
-    events:
-      - http:
-          path: subscription
-          method: post
-          cors:
-            origin: '*'
-            headers: ${self:custom.allowedHeaders}
   get-question:
     handler: question-get.handler
     description: GET /question
@@ -80,26 +70,44 @@ functions:
           cors:
             origin: '*'
             headers: ${self:custom.allowedHeaders}
+  delete-note:
+    handler: question-delete.handler
+    description: DELETE /question
+    events:
+      - http:
+          path: question
+          method: delete
+          cors:
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+  add-subscription:
+    handler: subscription-add.handler
+    description: POST /subscription
+    events:
+      - http:
+          path: subscription
+          method: post
+          cors:
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+  delete-subscription:
+    handler: subscription-delete.handler
+    description: DELETE /subscription
+    events:
+      - http:
+          path: subscription
+          method: delete
+          cors:
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+  get-subscription:
+    handler: subscription-get.handler
+    description: GET /subscription
+    events:
+      - http:
+          path: subscription
+          method: get
+          cors:
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
 
-  # get-notes:
-  #   handler: crud-api/get-notes.handler
-  #   description: GET /notes
-  #   events:
-  #     - http:
-  #         path: notes
-  #         method: get
-  #         cors:
-  #           origin: '*'
-  #           headers: ${self:custom.allowedHeaders}
-
-
-  # delete-note:
-  #   handler: crud-api/delete-note.handler
-  #   description: DELETE /note
-  #   events:
-  #     - http:
-  #         path: subscription/t/{timestamp}
-  #         method: delete
-  #         cors:
-  #           origin: '*'
-  #           headers: ${self:custom.allowedHeaders}

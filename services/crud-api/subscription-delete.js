@@ -14,12 +14,20 @@ const tableName = "subscription";
 
 exports.handler = async (event) => {
     try {
-        let timestamp = parseInt(event.pathParameters.timestamp);
+        let user_id = util.getUserId(event.headers)
+        let timestamp = parseInt(event.queryStringParameters.timestamp)
+        if(!user_id || !timestamp){
+            let err = {}
+            err.name = "ValidationException"
+            err.message = "Authorization failure"
+            throw err
+        }
+        
         let params = {
             TableName: tableName,
             Key: {
-                user_id: util.getUserId(event.headers),
-                timestamp: timestamp
+                'user_id' : user_id,
+                'timestamp' : timestamp
             }
         };
 

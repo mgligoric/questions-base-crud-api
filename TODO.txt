@@ -21,3 +21,4 @@ https://stackoverflow.com/questions/56051891/how-to-query-aws-dynamodb-using-key
 - Vodi racuna da li kod dynamoDB koristis funkciju delete / update ili sta vec jer
 se on da razlikuju Expressions koje mozes da koristis u params
 - Istrazi kako da obrises vise stvari iz tabele 
+- Izmeniti da se ne koristi scan funkcija

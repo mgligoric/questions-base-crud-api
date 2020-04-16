@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-amplify": "^3.0.7",
     "aws-sdk": "^2.655.0",
+    "jwt-decode": "^2.2.0",
     "moment": "^2.24.0",
     "serverless-offline": "^6.1.4",
     "underscore": "^1.10.2",

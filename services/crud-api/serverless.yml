@@ -41,6 +41,16 @@ provider:
       - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/$SUBSCRIPTION_TABLE"
 
 functions:
+  authenticate-google:
+    handler: authenticate-google.handler
+    description: Google IDP Authentication
+    events:
+      - http:
+          path: auth
+          method: get
+          cors:
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
   add-question:
     handler: question-add.handler
     description: POST /question
@@ -126,10 +136,23 @@ resources:
       Type: AWS::Cognito::UserPool
       Properties:
         UserPoolName: cognito_sls_backend_user_pool
-        # UsernameAttributes: - first deploy uncomment
-        #   - email
-        # AutoVerifiedAttributes:
-        #   - email
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        Schema:
+          - Name: name
+            AttributeDataType: String
+            Mutable: true
+            Required: false
+          - Name: email
+            AttributeDataType: String
+            Mutable: false
+            Required: true
+          - Name: phone_number
+            AttributeDataType: String
+            Mutable: true
+            Required: false
     # Cognito - Client
     CognitoUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
@@ -227,4 +250,14 @@ resources:
     #                 - "cognito-sync:*"
     #                 - "cognito-identity:*"
     #               Resource: "*"
+
+    GatewayResponseDefault4XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
 

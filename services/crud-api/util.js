@@ -6,6 +6,10 @@ const getQuestionId = (headers) => {
     return headers.app_question_id;
 }
 
+const getIdToken = (headers) => {
+    return headers.Authorization;
+}
+
 const getResponseHeaders = () => {
     return {
         'Access-Control-Allow-Origin': '*'
@@ -15,5 +19,6 @@ const getResponseHeaders = () => {
 module.exports = {
     getUserId,
     getResponseHeaders,
-    getQuestionId
+    getQuestionId,
+    getIdToken
 }

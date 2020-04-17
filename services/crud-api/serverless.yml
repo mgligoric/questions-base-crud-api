@@ -4,6 +4,8 @@ plugins:
   - serverless-offline
 
 custom:
+  # custom:
+  #   secrets: ${file(secrets.json)}
   allowedHeaders:
     - Accept
     - Content-Type
@@ -29,6 +31,9 @@ provider:
   environment:
     QUESTION_TABLE: question
     SUBSCRIPTION_TABLE: subscritpion
+    USER_TABLE: user
+    # JWT_SECRET: ${self:custom.secrets.JWT_SECRET}
+    # AWS_ID: ${self:custom.secrets.AWS_ID}
   iamRoleStatements:
     - Effect: Allow
       Action: 
@@ -38,8 +43,44 @@ provider:
       Resource: 
       - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/$QUESTION_TABLE"
       - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/$SUBSCRIPTION_TABLE"
+      - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/$USER_TABLE"
 
 functions:
+  verify-token:
+        handler: authorizer.handler
+  login:
+    handler: login.handler
+    events:
+      - http:
+          path: login
+          method: post
+          cors: 
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+  register:
+    handler: register.handler
+    events:
+      - http:
+          path: register
+          method: post
+          cors: 
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+  get-user:
+    handler: user-get.handler
+    events:
+      - http:
+          path: user
+          method: post
+          cors: 
+            origin: '*'
+            headers: ${self:custom.allowedHeaders}
+          authorizer:
+                name: verify-token
+                            # this tells the lambda where to take the information from, 
+                            # in our case the HTTP Authorization header
+                identitySource: method.request.header.Authorization 
+                resultTtlInSeconds: 3600 # cache the result for 1 hour
   add-question:
     handler: question-add.handler
     description: POST /question
@@ -50,6 +91,12 @@ functions:
           cors:
             origin: '*'
             headers: ${self:custom.allowedHeaders}
+          authorizer:
+                name: verify-token
+                            # this tells the lambda where to take the information from, 
+                            # in our case the HTTP Authorization header
+                identitySource: method.request.header.Authorization 
+                resultTtlInSeconds: 3600 # cache the result for 1 hour
   update-question:
     handler: question-edit.handler
     description: PATCH /question
@@ -60,6 +107,12 @@ functions:
           cors:
             origin: '*'
             headers: ${self:custom.allowedHeaders}
+          authorizer:
+                name: verify-token
+                            # this tells the lambda where to take the information from, 
+                            # in our case the HTTP Authorization header
+                identitySource: method.request.header.Authorization 
+                resultTtlInSeconds: 3600 # cache the result for 1 hour
   get-question:
     handler: question-get.handler
     description: GET /question
@@ -70,6 +123,12 @@ functions:
           cors:
             origin: '*'
             headers: ${self:custom.allowedHeaders}
+          authorizer:
+                name: verify-token
+                            # this tells the lambda where to take the information from, 
+                            # in our case the HTTP Authorization header
+                identitySource: method.request.header.Authorization 
+                resultTtlInSeconds: 3600 # cache the result for 1 hour
   delete-note:
     handler: question-delete.handler
     description: DELETE /question
@@ -80,6 +139,12 @@ functions:
           cors:
             origin: '*'
             headers: ${self:custom.allowedHeaders}
+          authorizer:
+                name: verify-token
+                            # this tells the lambda where to take the information from, 
+                            # in our case the HTTP Authorization header
+                identitySource: method.request.header.Authorization 
+                resultTtlInSeconds: 3600 # cache the result for 1 hour
   add-subscription:
     handler: subscription-add.handler
     description: POST /subscription
@@ -90,6 +155,12 @@ functions:
           cors:
             origin: '*'
             headers: ${self:custom.allowedHeaders}
+          authorizer:
+                name: verify-token
+                            # this tells the lambda where to take the information from, 
+                            # in our case the HTTP Authorization header
+                identitySource: method.request.header.Authorization 
+                resultTtlInSeconds: 3600 # cache the result for 1 hour
   delete-subscription:
     handler: subscription-delete.handler
     description: DELETE /subscription
@@ -100,6 +171,12 @@ functions:
           cors:
             origin: '*'
             headers: ${self:custom.allowedHeaders}
+          authorizer:
+                name: verify-token
+                            # this tells the lambda where to take the information from, 
+                            # in our case the HTTP Authorization header
+                identitySource: method.request.header.Authorization 
+                resultTtlInSeconds: 3600 # cache the result for 1 hour
   get-subscription:
     handler: subscription-get.handler
     description: GET /subscription
@@ -110,4 +187,10 @@ functions:
           cors:
             origin: '*'
             headers: ${self:custom.allowedHeaders}
+          authorizer:
+                name: verify-token
+                            # this tells the lambda where to take the information from, 
+                            # in our case the HTTP Authorization header
+                identitySource: method.request.header.Authorization 
+                resultTtlInSeconds: 3600 # cache the result for 1 hour
 

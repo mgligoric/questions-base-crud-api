@@ -1,3 +1,7 @@
+const bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
+const fs = require('fs');
+
 const getUserId = (headers) => {
     return headers.app_user_id;
 }
@@ -12,8 +16,19 @@ const getResponseHeaders = () => {
     }
 }
 
+async function getUserFromToken(token) {
+
+    const publicKey = fs.readFileSync('jwtRS256.key.pub')
+    const decoded = jwt.verify(token, publicKey, { algorithms: ['RS256'] })
+
+    return decoded;
+}
+
+
+
 module.exports = {
     getUserId,
     getResponseHeaders,
-    getQuestionId
+    getQuestionId,
+    getUserFromToken
 }

@@ -22,3 +22,16 @@ https://stackoverflow.com/questions/56051891/how-to-query-aws-dynamodb-using-key
 se on da razlikuju Expressions koje mozes da koristis u params
 - Istrazi kako da obrises vise stvari iz tabele 
 - Izmeniti da se ne koristi scan funkcija
+- Napraviti na jednom mestu specifikaciju za semu za bazu i menjaj ako budes sta dodavala/oduzimala
+Da znas uvek kako ti izgledaju podaci u kom su formatu
+Pogledaj  ovde kako si seme napravila posebno za indekse koje treba da dodas u napred
+- nisam sigurna za hash password u register ruti
+- filtrirati query-je ! nemoj tek tako da ubacis sta ti stigne od podataka
+- kako da hendlujem error ???????? byscript
+- byscript da li uopste dobro radim sa ovim promise-ima i byscript-om 
+jer sta cu ako dobijem error
+- Premesti konstante u util
+- serverless ili EC2? nisam sigurna oko cene
+- authorizer - da li je bezbedno da onako saljem(primam) token
+- ne zaboravi da ti vrv ovako izgleda const token = event.headers.Authorization.replace("Bearer ", "");
+tako da ces ovaj Barer morati da zamenis 

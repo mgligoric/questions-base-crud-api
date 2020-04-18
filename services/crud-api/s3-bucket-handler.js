@@ -65,7 +65,7 @@ async function putUserImageIntoS3(username, image){
             if (err){
                 err.name = "S3 Uploading error"
                 err.message = "Didn't upload image"
-                console.log(err)
+                //console.log(err)
                 reject(err) // this works like throw - your handler will get it
             }
             else{
@@ -91,7 +91,7 @@ async function getUserImageFromS3(key){
             if (err){
                 err.name = "S3 Loading error"
                 err.message = "Didn't load image"
-                console.log(err)
+                //console.log(err)
                 reject(err) // this works like throw - your handler will get it
             }
             else{

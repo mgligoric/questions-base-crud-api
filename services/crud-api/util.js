@@ -16,17 +16,9 @@ const getResponseHeaders = () => {
     }
 }
 
-async function getUserFromToken(token) {
-
-    const publicKey = fs.readFileSync('jwtRS256.key.pub')
-    const decoded = jwt.verify(token, publicKey, { algorithms: ['RS256'] })
-
-    return decoded;
-}
 
 module.exports = {
     getUserId,
     getResponseHeaders,
-    getQuestionId,
-    getUserFromToken
+    getQuestionId
 }

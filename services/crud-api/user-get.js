@@ -14,6 +14,7 @@ const tableName = "user";
 
 exports.handler = async (event) => {
     try {
+        console.log('Get user')
         const token = event.headers.Authorization.replace("Bearer ", "");
         const userObj = await util.getUserFromToken(token);
         

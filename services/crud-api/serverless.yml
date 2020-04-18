@@ -71,7 +71,7 @@ functions:
     events:
       - http:
           path: user
-          method: post
+          method: get
           cors: 
             origin: '*'
             headers: ${self:custom.allowedHeaders}

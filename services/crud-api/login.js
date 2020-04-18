@@ -17,6 +17,27 @@ const tableName = "user";
 function comparePassword(eventPassword, userPassword) {
     return bcrypt.compare(eventPassword, userPassword);
 }
+
+async function sign(user_found){
+    console.log('user token sign')
+    const privateKey = fs.readFileSync('jwtRS256.key')
+    const signed = await new Promise((resolve, reject) => {
+        jwt.sign({ user: user_found }, privateKey, { algorithm: 'RS256'} ,function(err, data){
+          if (err){
+              err.name = "JSON verify error"
+              err.message = "Not verified"
+              reject(err) // this works like throw - your handler will get it
+          }
+          else{
+              //console.log("Successfully saved object to " + BUCKET + "/" + filePath);
+              resolve(data) // will retur stringified data
+          }
+      });
+    })
+  
+    return signed
+  }
+
 exports.handler = async (event) => {
     try {
         let item = JSON.parse(event.body).Item;
@@ -40,7 +61,7 @@ exports.handler = async (event) => {
         };
 
         retData = await dynamodb.query(params).promise()
-        console.log(retData)
+        //console.log(retData)
         if(!_.isEmpty(retData.Items)){
             let passwordHash = retData.Items[0].password
             let password = item.password
@@ -49,23 +70,15 @@ exports.handler = async (event) => {
                 passwordHash
               );
             if (isValidPassword) {
-                const privateKey = fs.readFileSync('jwtRS256.key')
                 let user_found = retData.Items[0]
-                const token = jwt.sign({ user: user_found }, privateKey, { algorithm: 'RS256'})
+                const privateKey = fs.readFileSync('jwtRS256.key')
+                const token = jwt.sign({ user: user_found.user_id }, privateKey, { algorithm: 'RS256'}) // msm da moja funkcija sign - gore i ovo dole isto rade
+                console.log('User signed')
 
                 return Promise.resolve({ auth: true, token: token, status: "SUCCESS" }).then(session => ({
                     statusCode: 200,
                     body: JSON.stringify(session)
                   }))
-                //   .catch(err => {
-                //     console.log({ err });
-              
-                //     return {
-                //       statusCode: err.statusCode || 500,
-                //       headers: { "Content-Type": "text/plain" },
-                //       body: { stack: err.stack, message: err.message }
-                //     };
-                //   });
             }
 
         }else{
@@ -77,7 +90,7 @@ exports.handler = async (event) => {
 
 
     } catch (err) {
-        console.log("Error", err);
+        //console.log("Error", err);
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
             headers: util.getResponseHeaders(),

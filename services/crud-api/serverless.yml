@@ -32,6 +32,7 @@ provider:
     QUESTION_TABLE: question
     SUBSCRIPTION_TABLE: subscritpion
     USER_TABLE: user
+    BUCKET_NAME: bucket-for-question
     # JWT_SECRET: ${self:custom.secrets.JWT_SECRET}
     # AWS_ID: ${self:custom.secrets.AWS_ID}
   iamRoleStatements:
@@ -40,10 +41,20 @@ provider:
         - dynamodb:Query
         - dynamodb:PutItem
         - dynamodb:DeleteItem
+        - "s3:ListBucket"
+        - "s3:GetObject"
+        - "s3:PutObject"
       Resource: 
       - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/$QUESTION_TABLE"
       - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/$SUBSCRIPTION_TABLE"
       - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/$USER_TABLE"
+      - "arn:aws:s3:::bucket-for-question/*"
+    # - Effect: "Allow"
+    #   Action:
+    #     - "s3:ListBucket"
+    #     - "s3:GetObject"
+    #     - "s3:PutObject"
+    #   Resource: "arn:aws:s3:::bucket-for-question/*"
 
 functions:
   verify-token:
@@ -76,11 +87,11 @@ functions:
             origin: '*'
             headers: ${self:custom.allowedHeaders}
           authorizer:
-                name: verify-token
-                            # this tells the lambda where to take the information from, 
-                            # in our case the HTTP Authorization header
-                identitySource: method.request.header.Authorization 
-                resultTtlInSeconds: 3600 # cache the result for 1 hour
+            name: verify-token
+                        # this tells the lambda where to take the information from, 
+                        # in our case the HTTP Authorization header
+            identitySource: method.request.header.Authorization 
+            # resultTtlInSeconds: 3600 # cache the result for 1 hour
   add-question:
     handler: question-add.handler
     description: POST /question
@@ -194,3 +205,9 @@ functions:
                 identitySource: method.request.header.Authorization 
                 resultTtlInSeconds: 3600 # cache the result for 1 hour
 
+resources:
+  Resources:
+    S3OperationsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: bucket-for-question

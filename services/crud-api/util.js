@@ -24,8 +24,6 @@ async function getUserFromToken(token) {
     return decoded;
 }
 
-
-
 module.exports = {
     getUserId,
     getResponseHeaders,

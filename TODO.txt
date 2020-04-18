@@ -35,3 +35,8 @@ jer sta cu ako dobijem error
 - authorizer - da li je bezbedno da onako saljem(primam) token
 - ne zaboravi da ti vrv ovako izgleda const token = event.headers.Authorization.replace("Bearer ", "");
 tako da ces ovaj Barer morati da zamenis 
+- probaj da stavis na razlicito mesto servise - tipa onaj za bucket stavi negde drugde u drugi serverless i vidi je l radi tako
+- lepo promeni callback-e u async-await jer je bolje tako - primer vidi kod register funkcije kad hash-ujes sifru i kod
+s3 bucket-a :D
+- dodaj biblioteku za loger da bude uniformno
+- upisuj logove u fajl

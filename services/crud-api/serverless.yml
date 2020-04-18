@@ -32,6 +32,7 @@ provider:
     QUESTION_TABLE: question
     SUBSCRIPTION_TABLE: subscritpion
     USER_TABLE: user
+    BUCKET_NAME: bucket-for-question
     # JWT_SECRET: ${self:custom.secrets.JWT_SECRET}
     # AWS_ID: ${self:custom.secrets.AWS_ID}
   iamRoleStatements:
@@ -44,6 +45,12 @@ provider:
       - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/$QUESTION_TABLE"
       - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/$SUBSCRIPTION_TABLE"
       - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/$USER_TABLE"
+    # - Effect: "Allow"
+    #   Action:
+    #     - "s3:ListBucket"
+    #     - "s3:GetObject"
+    #     - "s3:PutObject"
+    #   Resource: "arn:aws:s3:::bucket-for-question/*"
 
 functions:
   verify-token:
@@ -194,3 +201,9 @@ functions:
                 identitySource: method.request.header.Authorization 
                 resultTtlInSeconds: 3600 # cache the result for 1 hour
 
+# resources:
+#   Resources:
+#     S3OperationsBucket:
+#       Type: AWS::S3::Bucket
+#       Properties:
+#         BucketName: bucket-for-question

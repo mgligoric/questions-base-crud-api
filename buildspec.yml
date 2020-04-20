@@ -8,8 +8,12 @@ phases:
   pre_build:
     commands:
       - echo Install source NPM dependencies...
+      - cd services/crud-api
+      - echo Path is ...
+      - pwd
       - npm install 
       - npm install underscore jsonwebtoken bcrypt fs moment uuid4
+      - cd ..
   build:
     commands:
       - echo Deployment started on `date`

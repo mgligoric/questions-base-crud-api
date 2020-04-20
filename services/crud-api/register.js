@@ -54,6 +54,7 @@ exports.handler = async (event, context, callback) => {
         item.password  = await hashPassword(saltRounds,myPlaintextPassword);
         item.user_id = uuidv4()
         if (item.image){
+            console.log('Image')
             let s3UploadResult = await s3.putUserImageIntoS3(item.username, item.image) // if in this function is called reject(err) that means that it will be catched by this handler-s catch - bottom of the file -> so you don't need to ask here 
             console.log("s3UploadResult -----" + JSON.stringify(s3UploadResult))
             item.image = s3UploadResult.key

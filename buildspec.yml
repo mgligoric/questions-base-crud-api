@@ -8,7 +8,8 @@ phases:
   pre_build:
     commands:
       - echo Install source NPM dependencies...
-      - npm install
+      - npm install 
+      - npm install underscore jsonwebtoken bcrypt fs moment uuid4
   build:
     commands:
       - echo Deployment started on `date`
@@ -18,7 +19,7 @@ phases:
       - echo $pwd
       # - sls deploy -v -s $ENV_NAME
       - cd ../crud-api
-      - pwd
+      - echo pwd
       #- sls deploy -v -s $ENV_NAME
   post_build:
     commands:

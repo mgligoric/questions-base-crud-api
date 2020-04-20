@@ -13,7 +13,9 @@ phases:
       - pwd
       - npm install 
       - npm install underscore jsonwebtoken bcrypt fs moment uuid4
-      - cd ..
+      - cd ../..
+      - echo Path is ...
+      - pwd
   build:
     commands:
       - echo Deployment started on `date`

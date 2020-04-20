@@ -1,0 +1,22 @@
+{
+  "name": "serverless-v1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.655.0",
+    "bcrypt": "^4.0.1",
+    "fs": "0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.24.0",
+    "serverless-offline": "^6.1.4",
+    "underscore": "^1.10.2",
+    "uuid": "^7.0.3"
+  }
+}

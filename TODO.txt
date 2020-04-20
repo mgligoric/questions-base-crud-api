@@ -41,3 +41,4 @@ s3 bucket-a :D
 - dodaj biblioteku za loger da bude uniformno
 - upisuj logove u fajl
 - promeni base64 na jednu rutu za sliku
+- da li je ok da generisem node module u api folder

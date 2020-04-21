@@ -1,0 +1,15 @@
+In folder with lambda functions there must be :
+* node_modules (npm install)
+* all node modlue dependecies used
+    - underscore
+    - jsonwebtoken
+    - bcryptjs instead of bycrip bcs of headers!!!
+    - fs
+    - moment
+    - uuid4
+* package.json
+* package-lock.json
+
+Add this permision to lambdas 
+- chmod a+r * (simply run that into command line where you have yor api)
+Bcs if you don't add it you will not be able to read/write into files with lambdas

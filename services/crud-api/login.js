@@ -7,7 +7,7 @@ AWS.config.update({ region: 'eu-central-1' });
 
 const _ = require('underscore');
 const util = require('./util.js');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const fs = require('fs');
 

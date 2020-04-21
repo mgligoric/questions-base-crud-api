@@ -9,7 +9,7 @@ const moment = require('moment');
 const uuidv4 = require('uuid/v4');
 const util = require('./util.js');
 const s3 = require('./s3-bucket-handler.js');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 const tableName = "user";

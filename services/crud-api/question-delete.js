@@ -5,8 +5,6 @@
 const AWS = require('aws-sdk');
 AWS.config.update({ region: 'eu-central-1' });
 
-const moment = require('moment');
-const uuidv4 = require('uuid/v4');
 const util = require('./util.js');
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
@@ -49,7 +47,7 @@ exports.handler = async (event) => {
             headers: util.getResponseHeaders()
         };
     } catch (err) {
-        console.log("Error", err);
+        util.logger.error("Error", err);
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
             headers: util.getResponseHeaders(),

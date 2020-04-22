@@ -33,15 +33,15 @@ exports.handler = async (event) => {
         let params = {}
 
         if(!event.queryStringParameters){
-            console.log('All Empty query params')
+            util.logger.warn('All Empty query params')
             params = {
                 TableName:tableName
             };
             emptyQueryParams = 1
         }else if(event.queryStringParameters.question_id){
-            console.log('Not Empty question_id param')
+            util.logger.info('Not Empty question_id param')
             question_id = event.queryStringParameters.question_id
-            console.log(question_id)
+            util.logger.info(question_id)
             params = {
                 TableName:tableName,
                 Key: {
@@ -58,7 +58,7 @@ exports.handler = async (event) => {
             notEmptyQuestionIdParam = 1
         }
         else{
-            console.log('Not Empty query paramters')
+            util.logger.info('Not Empty query paramters')
             let category = ''
             let timestamp = ''
             let professor_id = ''
@@ -79,7 +79,7 @@ exports.handler = async (event) => {
                 }
                 expressionAttributeNames['#category'] = 'category'
                 expressionAttributeValues[':category'] = category
-                console.log('Category - ' + category)
+                util.logger.info('Category - ' + category)
             }
 
             if (event.queryStringParameters.timestamp){
@@ -97,7 +97,7 @@ exports.handler = async (event) => {
                 }
                 expressionAttributeNames['#timestamp'] = 'timestamp'
                 expressionAttributeValues[':timestamp'] = timestamp
-                console.log('Timestamp - ' + timestamp)
+                util.logger.info('Timestamp - ' + timestamp)
             }
 
             if (event.queryStringParameters.professor_id){
@@ -115,7 +115,7 @@ exports.handler = async (event) => {
                 }
                 expressionAttributeNames['#professor_id'] = 'professor_id'
                 expressionAttributeValues[':professor_id'] = professor_id
-                console.log('ProfId - ' + professor_id)
+                util.logger.info('ProfId - ' + professor_id)
             }
 
             if (event.queryStringParameters.points){
@@ -133,7 +133,7 @@ exports.handler = async (event) => {
                 }
                 expressionAttributeNames['#points'] = 'points'
                 expressionAttributeValues[':points'] = parseInt(points)
-                console.log('Points - ' + points)
+                util.logger.info('Points - ' + points)
             }
 
         
@@ -148,20 +148,20 @@ exports.handler = async (event) => {
         }
     
         let retData = {}
-        console.log('Params - ')
-        console.log(params)
+        util.logger.info('Params - ')
+        util.logger.info(params)
         if (emptyQueryParams){
-            console.log('scab')
+            util.logger.info('Scan')
             retData = await dynamodb.scan(params).promise()
         // }if (notEmptyQuestionIdParam){   --> this for returning only one 
         //     retData = await dynamodb.get(params).promise()
         }else{
-            console.log('query')
+            util.logger.info('query')
             retData = await dynamodb.query(params).promise()
         }
         
-        console.log('Returned from quering')
-        console.log(retData)
+        util.logger.info('Returned from quering')
+        util.logger.info(retData)
         if(!_.isEmpty(retData.Items)){
             return {
                 statusCode: 200,
@@ -171,7 +171,7 @@ exports.handler = async (event) => {
         }
 
     } catch (err) {
-        console.log("Error", err);
+        util.logger.info("Error", err);
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
             headers: util.getResponseHeaders(),

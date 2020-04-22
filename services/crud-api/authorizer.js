@@ -6,29 +6,8 @@ const AWS = require('aws-sdk');
 AWS.config.update({ region: 'eu-central-1' });
 
 const util = require('./util.js');
-var jwt = require('jsonwebtoken');
-const fs = require('fs');
+const jwtFunc = require('./jwt-func')
 
-
-async function getUserFromToken(token){
-  console.log('getUserToken')
-  const publicKey = fs.readFileSync('jwtRS256.key.pub')
-  const decoded = await new Promise((resolve, reject) => {
-    jwt.verify(token, publicKey, { algorithms: ['RS256'] }, function(err, data){
-        if (err){
-            err.name = "JSON verify error"
-            err.message = "Not verified"
-            reject(err) // this works like throw - your handler will get it
-        }
-        else{
-            //console.log("Successfully saved object to " + BUCKET + "/" + filePath);
-            resolve(data) // will retur stringified data
-        }
-    });
-  })
-
-  return decoded
-}
 function generatePolicyDocument(effect, methodArn) {
     if (!effect || !methodArn) return null;
   
@@ -57,25 +36,22 @@ function generateAuthResponse(principalId, effect, methodArn) {
 
 module.exports.handler = async (event, context, callback) => {
     try {
-        console.log("authorizer")
+        util.logger.info("authorizer")
         console.log(event.authorizationToken)
 
         if (!event.authorizationToken){
-            //return callback(null, generateAuthResponse(decoded.user.user_id, "Deny", methodArn));
+            return callback(null, generateAuthResponse(decoded.user.user_id, "Deny", methodArn));
         }
         const token = event.authorizationToken.replace("Bearer ", ""); 
-        //console.log("token -- " + token)
         const methodArn = event.methodArn;
 
         if (!token || !methodArn){
-          console.log("Unauthorized")
-          //return callback(null, "Unauthorized");
+          util.logger.warn("Unauthorized");
+          return callback(null, "Unauthorized");
         }
 
-        const publicKey = fs.readFileSync('jwtRS256.key.pub')
         // verifies token
-        const decoded = await getUserFromToken(token)
-        console.log("Juhu " + decoded.user)
+        const decoded = await jwtFunc.getUserFromToken(token)
 
         if (decoded && decoded.user) {
             return callback(null, generateAuthResponse(decoded.user, "Allow", methodArn));
@@ -84,7 +60,7 @@ module.exports.handler = async (event, context, callback) => {
         }
 
     } catch (err) {
-        console.log("Error", err);
+        util.logger.error("Error", err);
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
             headers: util.getResponseHeaders(),
@@ -95,5 +71,3 @@ module.exports.handler = async (event, context, callback) => {
         };
     }
 }
-
-module.exports.getUserFromToken = getUserFromToken

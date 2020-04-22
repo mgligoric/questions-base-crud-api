@@ -7,36 +7,11 @@ AWS.config.update({ region: 'eu-central-1' });
 
 const _ = require('underscore');
 const util = require('./util.js');
-const bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
-const fs = require('fs');
+const crypto = require('./crypt');
+const jwtFunc = require('./jwt-func')
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 const tableName = "user";
-
-function comparePassword(eventPassword, userPassword) {
-    return bcrypt.compare(eventPassword, userPassword);
-}
-
-async function sign(user_found){
-    console.log('user token sign')
-    const privateKey = fs.readFileSync('jwtRS256.key')
-    const signed = await new Promise((resolve, reject) => {
-        jwt.sign({ user: user_found }, privateKey, { algorithm: 'RS256'} ,function(err, data){
-          if (err){
-              err.name = "JSON verify error"
-              err.message = "Not verified"
-              reject(err) // this works like throw - your handler will get it
-          }
-          else{
-              //console.log("Successfully saved object to " + BUCKET + "/" + filePath);
-              resolve(data) // will retur stringified data
-          }
-      });
-    })
-  
-    return signed
-  }
 
 exports.handler = async (event) => {
     try {
@@ -61,19 +36,19 @@ exports.handler = async (event) => {
         };
 
         retData = await dynamodb.query(params).promise()
-        //console.log(retData)
+
         if(!_.isEmpty(retData.Items)){
+            util.logger.info('User exists')
             let passwordHash = retData.Items[0].password
             let password = item.password
-            let isValidPassword = await comparePassword(
+            let isValidPassword = await crypto.comparePassword(
                 password,
                 passwordHash
               );
             if (isValidPassword) {
                 let user_found = retData.Items[0]
-                const privateKey = fs.readFileSync('jwtRS256.key')
-                const token = jwt.sign({ user: user_found.user_id }, privateKey, { algorithm: 'RS256'}) // msm da moja funkcija sign - gore i ovo dole isto rade
-                console.log('User signed')
+                const token = await jwtFunc.signUserToToken(user_found.user_id)
+                util.logger.info('Valid password')
 
                 return Promise.resolve({ auth: true, token: token, status: "SUCCESS" }).then(session => ({
                     statusCode: 200,
@@ -90,7 +65,7 @@ exports.handler = async (event) => {
 
 
     } catch (err) {
-        //console.log("Error", err);
+        util.logger.error('Error - ' + err)
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
             headers: util.getResponseHeaders(),

@@ -5,26 +5,13 @@
 const AWS = require('aws-sdk');
 AWS.config.update({ region: 'eu-central-1' });
 
-const moment = require('moment');
 const uuidv4 = require('uuid/v4');
 const util = require('./util.js');
 const s3 = require('./s3-bucket-handler.js');
-const bcrypt = require('bcryptjs');
+const crypto = require('./crypt')
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 const tableName = "user";
-
-// hash the password with the salt
-async function hashPassword (saltRounds, password) {  
-    const hashedPassword = await new Promise((resolve, reject) => {
-      bcrypt.hash(password, saltRounds, function(err, hash) {
-        if (err) reject(err)
-        resolve(hash)
-      });
-    })
-  
-    return hashedPassword
-  }
 
 //TODO DODATI PROVERU DAL LI TAKAV MEJL VEC POSTOJI USERNAME MORA BITI JEDINSTVENO !!!
 exports.handler = async (event, context, callback) => {
@@ -51,14 +38,14 @@ exports.handler = async (event, context, callback) => {
 
         const saltRounds = 10;
         const myPlaintextPassword = item.password;
-        item.password  = await hashPassword(saltRounds,myPlaintextPassword);
+        item.password  = await crypto.hashPassword(saltRounds,myPlaintextPassword);
         item.user_id = uuidv4()
         if (item.image){
-            console.log('Image')
+            util.logger.info('Image')
             let s3UploadResult = await s3.putUserImageIntoS3(item.username, item.image) // if in this function is called reject(err) that means that it will be catched by this handler-s catch - bottom of the file -> so you don't need to ask here 
-            console.log("s3UploadResult -----" + JSON.stringify(s3UploadResult))
+            util.logger.info("s3UploadResult -----" + JSON.stringify(s3UploadResult))
             item.image = s3UploadResult.key
-            console.log("url img - " + item.image)
+            cutil.logger.info("url img - " + item.image)
         }
 
         let data = await dynamodb.put({
@@ -74,7 +61,7 @@ exports.handler = async (event, context, callback) => {
         };
 
     } catch (err) {
-        console.log("Error --> ", err);
+        util.logger.error("Error --> ", err);
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
             headers: util.getResponseHeaders(),

@@ -1,6 +1,10 @@
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const fs = require('fs');
+const logger_service = require('./logger-service')
+let logger = new logger_service.Logger()
+
+const TAG = 'AWS QuestionsAPI'
 
 const getUserId = (headers) => {
     return headers.app_user_id;
@@ -20,5 +24,7 @@ const getResponseHeaders = () => {
 module.exports = {
     getUserId,
     getResponseHeaders,
-    getQuestionId
+    getQuestionId,
+    TAG,
+    logger
 }

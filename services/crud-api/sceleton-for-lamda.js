@@ -14,7 +14,7 @@ const tableName = TABLE NAME;
 
 exports.handler = async (event) => {
     try {
-
+        util.logger.info("Sceleton for lambda", err);
 
 
         return {
@@ -23,7 +23,7 @@ exports.handler = async (event) => {
             body: JSON.stringify(item)
         };
     } catch (err) {
-        console.log("Error", err);
+        util.logger.error("Error", err);
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
             headers: util.getResponseHeaders(),

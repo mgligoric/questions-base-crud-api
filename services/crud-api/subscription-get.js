@@ -45,7 +45,7 @@ exports.handler = async (event) => {
             };
         }  
     } catch (err) {
-        console.log("Error", err);
+        util.logger.error("Error", err);
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
             headers: util.getResponseHeaders(),

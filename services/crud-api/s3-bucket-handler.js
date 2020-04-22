@@ -6,13 +6,14 @@ const s3 = new AWS.S3();
 const BUCKET = 'bucket-for-question';
 const filePathPrefix_userImage = 'avatars/'
 const filePathSufix_userImages = '.jpg'
+const util = require('./util.js')
  
 async function putUserImageIntoS3(username, image){
-    console.log("Put image S3")
+    util.logger.info("Put image S3")
     let encodedImage = image;
     let decodedImage = Buffer.from(encodedImage, 'base64');
     var filePath = filePathPrefix_userImage + username + filePathSufix_userImages
-    console.log('Filepath --- > ' + filePath)
+    util.logger.info('Filepath --- > ' + filePath)
     var params = {
         "Body": decodedImage,
         "Bucket": BUCKET,
@@ -24,11 +25,11 @@ async function putUserImageIntoS3(username, image){
             if (err){
                 err.name = "S3 Uploading error"
                 err.message = "Didn't upload image"
-                //console.log(err)
+                util.logger.error('Did not upload image')
                 reject(err) // this works like throw - your handler will get it
             }
             else{
-                console.log("Successfully saved object to " + BUCKET + "/" + filePath);
+                util.logger.info("Successfully saved object to " + BUCKET + "/" + filePath);
                 resolve(data) // will retur stringified data
             }
         });
@@ -39,7 +40,7 @@ async function putUserImageIntoS3(username, image){
 }
 
 async function getUserImageFromS3(key){
-    console.log("Get image S3")
+    util.logger.info("Get image S3")
     var params = {
         "Bucket": BUCKET,
         "Key": key
@@ -50,11 +51,11 @@ async function getUserImageFromS3(key){
             if (err){
                 err.name = "S3 Loading error"
                 err.message = "Didn't load image"
-                //console.log(err)
+                util.logger.error('Did not load image')
                 reject(err) // this works like throw - your handler will get it
             }
             else{
-                //console.log("Successfully gets object from " + BUCKET + "/" + filePath);
+                util.logger.info("Successfully gets object from " + BUCKET);
                 resolve(data) // will retur stringified data
             }
         });

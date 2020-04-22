@@ -19,7 +19,7 @@ exports.handler = async (event) => {
         item.question_id = util.getQuestionId(event.headers)
         let question_id_expected = item.professor_id + ":" + item.question_id
         item.question_id = question_id_expected
-        console.log(question_id_expected)
+
         if(!item.professor_id){
             let err = {}
             err.name = "ValidationException"
@@ -44,7 +44,7 @@ exports.handler = async (event) => {
             ReturnValues:"UPDATED_NEW"
         };
         
-        console.log("Updating the item...");
+        logger.info("Updating the item...");
         dynamodb.update(params, function(err, data) {
             if (err) {
                 err.error = 'Database error'
@@ -60,7 +60,7 @@ exports.handler = async (event) => {
         };
 
     } catch (err) {
-        console.log("Error", err);
+        util.logger.error("Error", err);
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
             headers: util.getResponseHeaders(),

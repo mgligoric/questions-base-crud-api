@@ -37,7 +37,7 @@ exports.handler = async (event) => {
             body: JSON.stringify(item)
         };
     } catch (err) {
-        console.log("Error", err);
+        util.logger.error("Error", err);
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
             headers: util.getResponseHeaders(),

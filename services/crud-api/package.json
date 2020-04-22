@@ -12,8 +12,10 @@
   "dependencies": {
     "aws-sdk": "^2.655.0",
     "bcryptjs": "^2.4.3",
+    "dynamodb-toolbox": "^0.1.0",
     "fs": "0.0.1-security",
     "jsonwebtoken": "^8.5.1",
+    "log4js": "^6.2.1",
     "moment": "^2.24.0",
     "serverless-offline": "^6.1.4",
     "underscore": "^1.10.2",

@@ -9,17 +9,20 @@ const util = require('./util.js');
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 const tableName = "question";
+const sanitizer = require('./sanitizer')
+const authHeaders = require('./auth-headers')
 
 exports.handler = async (event) => {
     try {
-        let professor_id = util.getUserId(event.headers)
+        let professor_id = await authHeaders.getUserId(event.headers)
+        professor_id = sanitizer.sanitizeString(professor_id)
         if(!professor_id){
             let err = {}
             err.name = "ValidationException"
             err.message = "Authorization failure"
             throw err
         }
-        let question_id = event.queryStringParameters.question_id;
+        let question_id = authHeaders.getQuestionId(event.headers)
         if(!question_id){
             let err = {}
             err.name = "Nothing to delete"
@@ -44,13 +47,13 @@ exports.handler = async (event) => {
 
         return {
             statusCode: 200,
-            headers: util.getResponseHeaders()
+            headers: authHeaders.getResponseHeaders()
         };
     } catch (err) {
-        util.logger.error("Error", err);
+        util.logger.error("Error " + err);
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
-            headers: util.getResponseHeaders(),
+            headers: authHeaders.getResponseHeaders(),
             body: JSON.stringify({
                 error: err.name ? err.name : "Exception",
                 message: err.message ? err.message : "Unknown error"

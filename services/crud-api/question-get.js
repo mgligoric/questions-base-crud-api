@@ -10,12 +10,13 @@ const util = require('./util.js');
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 const tableName = "question"
-
+const sanitizer = require('./sanitizer')
+const authHeaders = require('./auth-headers')
 //TODO vidi kako da se zastitis od sql injection i 
 //nemoj da prosledjujes paramatre u query odmah
 exports.handler = async (event) => {
     try {
-        user_id = util.getUserId(event.headers)
+        let user_id = await authHeaders.getUserId(event.headers)
         if(!user_id){
             let err = {}
             err.name = "ValidationException"
@@ -41,6 +42,13 @@ exports.handler = async (event) => {
         }else if(event.queryStringParameters.question_id){
             util.logger.info('Not Empty question_id param')
             question_id = event.queryStringParameters.question_id
+            question_id = sanitizer.sanitizeString(question_id)
+            if(!question_id){
+                let err = {}
+                err.name = "ValidationException"
+                err.message = "Question id - not good parameter"
+                throw err
+            }
             util.logger.info(question_id)
             params = {
                 TableName:tableName,
@@ -101,7 +109,7 @@ exports.handler = async (event) => {
             }
 
             if (event.queryStringParameters.professor_id){
-                professor_id = event.queryStringParameters.professor_id
+                professor_id = user_id
                 if (!category && !timestamp){
                     indexName = 'question-professor_id-index'
                     query = '#professor_id = :professor_id'
@@ -165,7 +173,7 @@ exports.handler = async (event) => {
         if(!_.isEmpty(retData.Items)){
             return {
                 statusCode: 200,
-                headers: util.getResponseHeaders(),
+                headers: authHeaders.getResponseHeaders(),
                 body: JSON.stringify(retData.Items)
             };
         }
@@ -174,7 +182,7 @@ exports.handler = async (event) => {
         util.logger.info("Error", err);
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
-            headers: util.getResponseHeaders(),
+            headers: authHeaders.getResponseHeaders(),
             body: JSON.stringify({
                 error: err.name ? err.name : "Exception",
                 message: err.message ? err.message : "Unknown error"

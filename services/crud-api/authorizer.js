@@ -7,6 +7,7 @@ AWS.config.update({ region: 'eu-central-1' });
 
 const util = require('./util.js');
 const jwtFunc = require('./jwt-func')
+const sanitizer = require('./sanitizer')
 
 function generatePolicyDocument(effect, methodArn) {
     if (!effect || !methodArn) return null;
@@ -37,12 +38,13 @@ function generateAuthResponse(principalId, effect, methodArn) {
 module.exports.handler = async (event, context, callback) => {
     try {
         util.logger.info("authorizer")
-        console.log(event.authorizationToken)
+        //event.authorizationToken = sanitizer.sanitizeString(event.authorizationToken)
 
         if (!event.authorizationToken){
-            return callback(null, generateAuthResponse(decoded.user.user_id, "Deny", methodArn));
+           util.logger.error('Bad auth token')
+            //return callback(null, generateAuthResponse(decoded.user.user_id, "Deny", methodArn));
         }
-        const token = event.authorizationToken.replace("Bearer ", ""); 
+        const token = event.authorizationToken
         const methodArn = event.methodArn;
 
         if (!token || !methodArn){
@@ -52,7 +54,11 @@ module.exports.handler = async (event, context, callback) => {
 
         // verifies token
         const decoded = await jwtFunc.getUserFromToken(token)
+        if (!decoded){
+          util.logger.info('User id - undefined')
+        }
 
+        util.logger.info('User id - ' + decoded.user)
         if (decoded && decoded.user) {
             return callback(null, generateAuthResponse(decoded.user, "Allow", methodArn));
         } else {
@@ -60,7 +66,7 @@ module.exports.handler = async (event, context, callback) => {
         }
 
     } catch (err) {
-        util.logger.error("Error", err);
+        util.logger.error("Error - " +  err);
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
             headers: util.getResponseHeaders(),

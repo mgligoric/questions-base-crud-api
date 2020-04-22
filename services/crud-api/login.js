@@ -7,19 +7,24 @@ AWS.config.update({ region: 'eu-central-1' });
 
 const _ = require('underscore');
 const util = require('./util.js');
+
 const crypto = require('./crypt');
 const jwtFunc = require('./jwt-func')
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 const tableName = "user";
+const sanitizer = require('./sanitizer')
 
 exports.handler = async (event) => {
     try {
         let item = JSON.parse(event.body).Item;
+        item.username = sanitizer.sanitizeString(item.username)
+        item.password = sanitizer.sanitizeString(item.password)
+
         if (!item.username || !item.password){
             let err = {}
             err.name = "ValidationException"
-            err.message = "Missing expected values while process of logging in"
+            err.message = "Username or password are not in a good format"
             throw err
         }
 

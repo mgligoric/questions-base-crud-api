@@ -10,10 +10,11 @@ const util = require('./util.js');
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 const tableName = "subscription"
+const authHeaders = require('./auth-headers')
 
 exports.handler = async (event) => {
     try {
-        user_id = util.getUserId(event.headers)
+        let user_id = await authHeaders.getUserId(event.headers)
         if(!user_id){
             let err = {}
             err.name = "ValidationException"
@@ -35,20 +36,20 @@ exports.handler = async (event) => {
         if(!_.isEmpty(data.Items)) {
             return {
                 statusCode: 200,
-                headers: util.getResponseHeaders(),
+                headers: authHeaders.getResponseHeaders(),
                 body: JSON.stringify(data.Items)
             };
         } else {
             return {
                 statusCode: 404,
-                headers: util.getResponseHeaders()
+                headers: authHeaders.getResponseHeaders()
             };
         }  
     } catch (err) {
-        util.logger.error("Error", err);
+        util.logger.error("Error " + err);
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
-            headers: util.getResponseHeaders(),
+            headers: authHeaders.getResponseHeaders(),
             body: JSON.stringify({
                 error: err.name ? err.name : "Exception",
                 message: err.message ? err.message : "Unknown error"

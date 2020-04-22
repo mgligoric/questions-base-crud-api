@@ -11,21 +11,22 @@ const util = require('./util.js');
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 const tableName = "question";
+const sanitizer = require('./sanitizer')
+const authHeaders = require('./auth-headers')
 
 exports.handler = async (event) => {
     try {
         let item = JSON.parse(event.body).Item
-        item.professor_id = util.getUserId(event.headers)
-        item.question_id = util.getQuestionId(event.headers)
-        let question_id_expected = item.professor_id + ":" + item.question_id
-        item.question_id = question_id_expected
-
+        item.professor_id = await authHeaders.getUserId(event.headers)
         if(!item.professor_id){
             let err = {}
             err.name = "ValidationException"
             err.message = "Authorization failure"
             throw err
         }
+        item.question_id = authHeaders.getQuestionId(event.headers)
+        let question_id_expected = item.question_id
+        item.question_id = question_id_expected
 
         var params = {
             TableName:tableName,
@@ -44,7 +45,7 @@ exports.handler = async (event) => {
             ReturnValues:"UPDATED_NEW"
         };
         
-        logger.info("Updating the item...");
+        util.logger.info("Updating the item...");
         dynamodb.update(params, function(err, data) {
             if (err) {
                 err.error = 'Database error'
@@ -55,15 +56,15 @@ exports.handler = async (event) => {
 
         return {
             statusCode: 200,
-            headers: util.getResponseHeaders(),
+            headers: authHeaders.getResponseHeaders(),
             body: JSON.stringify(item)
         };
 
     } catch (err) {
-        util.logger.error("Error", err);
+        util.logger.error("Error " + err);
         return {
             statusCode: err.statusCode ? err.statusCode : 500,
-            headers: util.getResponseHeaders(),
+            headers: authHeaders.getResponseHeaders(),
             body: JSON.stringify({
                 error: err.name ? err.name : "Exception",
                 message: err.message ? err.message : "Unknown error"

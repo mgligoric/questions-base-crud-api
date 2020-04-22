@@ -29,7 +29,7 @@ async function putUserImageIntoS3(username, image){
                 reject(err) // this works like throw - your handler will get it
             }
             else{
-                util.logger.info("Successfully saved object to " + BUCKET + "/" + filePath);
+                util.logger.info("Successfully saved object to " + BUCKET);
                 resolve(data) // will retur stringified data
             }
         });

@@ -32,7 +32,7 @@ Pogledaj  ovde kako si seme napravila posebno za indekse koje treba da dodas u n
 jer sta cu ako dobijem error
 - Premesti konstante u util
 - serverless ili EC2? nisam sigurna oko cene
-- ne zaboravi da ti vrv ovako izgleda const token = event.headers.Authorization.replace("Bearer ", "");
+- ne zaboravi da ti vrv ovako izgleda const token = event.headers.Authorization.replace("Bearer ", ""); - uklonila
 tako da ces ovaj Barer morati da zamenis 
 - probaj da stavis na razlicito mesto servise - tipa onaj za bucket stavi negde drugde u drugi serverless i vidi je l radi tako
 - lepo promeni callback-e u async-await jer je bolje tako - primer vidi kod register funkcije kad hash-ujes sifru i kod
@@ -41,3 +41,12 @@ s3 bucket-a :D
 - upisuj logove u fajl
 - promeni base64 na jednu rutu za sliku
 - da li je ok da generisem node module u api folder
+
+Nemanja pitanja :
+- ci/cd 
+- node modules mi je u crud-api
+- smisli kako ces da prezentujes dobro sve 
+- sanitizer library ?  - pokazi kako si se ti savucala od sql napada
+- zastita DOS i sql(ako je moguce jer dynamo ne koristi sql?) injection ili nekog napada
+- aws kako da izracunam cenu generalno
+- nisam citala po stranicama ono ako ima vise stranica sta je to??? 

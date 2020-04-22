@@ -3,7 +3,7 @@ var jwt = require('jsonwebtoken');
 const fs = require('fs');
 
 async function getUserFromToken(token){
-    console.log('getUserToken')
+    util.logger.info('getUserToken')
     const publicKey = fs.readFileSync('jwtRS256.key.pub')
     const decoded = await new Promise((resolve, reject) => {
       jwt.verify(token, publicKey, { algorithms: ['RS256'] }, function(err, data){
@@ -32,7 +32,7 @@ async function getUserFromToken(token){
               reject(err) // this works like throw - your handler will get it
           }
           else{
-              resolve(data) // will retur stringified data
+              resolve(data) // will return stringified data
           }
       });
     })

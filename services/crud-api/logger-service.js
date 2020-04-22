@@ -4,7 +4,7 @@ const util = require('./util')
 class Logger {
 
     #logger
-    #tag = util.TAG
+    #tag = 'AWS Question API'
 
     constructor() {
       let log4js = require('log4js');

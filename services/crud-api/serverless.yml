@@ -30,7 +30,7 @@ provider:
   endpointType: regional
   environment:
     QUESTION_TABLE: question
-    SUBSCRIPTION_TABLE: subscritpion
+    SUBSCRIPTION_TABLE: subscription
     USER_TABLE: user
     BUCKET_NAME: bucket-for-question
     # JWT_SECRET: ${self:custom.secrets.JWT_SECRET}

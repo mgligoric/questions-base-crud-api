@@ -1,6 +1,7 @@
 node_modules
 .serverless
 package-lock.json
+TODO.txt
 
 services/crud-api/jwtRS256.key
 services/crud-api/jwtRS256.key.pub
